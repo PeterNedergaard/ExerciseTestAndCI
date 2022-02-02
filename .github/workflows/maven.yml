@@ -1,7 +1,39 @@
-- name: Set up Set up MySQL 8.0
-      uses: mirromutth/mysql-action@master
-      with:
-            mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-            mysql database: 'startcode_test' # Optional, default value is "test". The specified database which will be create
-            mysql user: 'dev' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-            mysql password: 'ax2'
+name: test
+
+on:
+      push:
+            branches:
+                  - master
+      pull_request:
+            branches:
+                  - master
+
+jobs:
+      build:
+            runs-on: ubuntu-18.04
+
+            strategy:
+                  matrix:
+                        node-version: ['10.x']
+
+            steps:
+                  - uses: actions/checkout@v1
+                  - name: Shutdown Ubuntu MySQL (SUDO)
+                    run: sudo service mysql stop
+                  - name: Use Node.js ${{ matrix.node-version }}
+                    uses: actions/setup-node@v1
+                    with:
+                          node-version: ${{ matrix.node-version }}
+                  - name: Set up MySQL 5.7
+                    uses: mirromutth/mysql-action@master
+                    with:
+                          mysql version: 5.7
+                          mysql database: test
+                          mysql root password: ${{ secrets.DatabasePassword }}
+                  - name: npm install, build, and test
+                    run: |
+                          npm install
+                          npm run lint
+                          npm test -- --password=${{ secrets.DatabasePassword }}
+                    env:
+                          CI: true
