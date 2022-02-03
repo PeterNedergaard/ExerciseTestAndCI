@@ -64,5 +64,12 @@ class ExerciseClassTest {
         assertEquals(expected,actual);
     }
 
+    @Test
+    public void US3Test(){
+        String expected = "Kurt";
+        String actual = instance.ChangeInfoByName("Hans", "Kurt", con);
+        assertEquals(expected,actual);
+    }
+
 
 }
