@@ -57,5 +57,12 @@ class ExerciseClassTest {
         assertEquals(expected,actual);
     }
 
+    @Test
+    public void US2Test(){
+        String expected = "Hans";
+        String actual = instance.getInfoByName("Hans", con);
+        assertEquals(expected,actual);
+    }
+
 
 }
